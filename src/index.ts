@@ -1,6 +1,6 @@
 import express from 'express';
 import routes from './routes/index';
-import {createScaledFolder} from './Helpers/imageHelper'
+import { createScaledFolder } from './Helpers/imageHelper';
 
 createScaledFolder();
 
@@ -13,6 +13,5 @@ app.use('/api', routes);
 app.listen(port, () => {
   console.log(`Example app listening at http://localhost:${port}`);
 });
-
 
 export default app;

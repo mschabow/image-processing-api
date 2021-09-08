@@ -6,8 +6,7 @@ import { strings } from '../../Helpers/strings';
 const images = express.Router();
 
 images.get('/', async (req, res) => {
-
-  console.log(`\n\nRequest Received: ${req.originalUrl}`)
+  console.log(`\n\nRequest Received: ${req.originalUrl}`);
   const name = req.query.name as string;
   const width = req.query.width as string;
   const height = req.query.height as string;

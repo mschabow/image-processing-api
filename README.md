@@ -2,6 +2,19 @@
 
 The Image Processing API allows a user to access the endpoint (/api/images) resize and/or reformat the image.
 
+## Script Information
+* Start server
+   * npm run dev
+* Build and Run Tests
+   * npm run test
+* Build
+   * npm run build
+* Run Prettier
+   * npm run prettier
+* Run ESLint
+   * npm run eslint
+* Run Jasmine (no build)
+   * npm run jasmine
 ## API Documentation
 
 # GET /api/images Query

@@ -16,7 +16,9 @@ describe('Request Validation Tests', () => {
   const height = '600';
   const format = 'png';
   it('Expect success with default values', () => {
-    expect(validateData(name, width, height, format)).toEqual(strings.validatedSuccess);
+    expect(validateData(name, width, height, format)).toEqual(
+      strings.validatedSuccess
+    );
   });
   it('Expect invalid width with negative width', () => {
     expect(validateData(name, '-600', height, format)).toEqual(
@@ -31,24 +33,25 @@ describe('Request Validation Tests', () => {
 });
 
 describe('Process Image Tests', () => {
-  
-
   it('Expect new resized file created after cache cleared', async () => {
     console.log('Removing Cache Directory and Contents');
     clearCache();
     createScaledFolder();
     await processImageRequest('fjord.jpg', '600', '800', 'jpg');
-    expect(fs.existsSync(getCreatedFileName())).toEqual(true);   
-    
+    expect(fs.existsSync(getCreatedFileName())).toEqual(true);
   });
 
   it('Expect cached file from same request', async () => {
-    
-    const response: string[] | undefined = await processImageRequest('fjord.jpg', '600', '800', 'jpg');
+    const response: string[] | undefined = await processImageRequest(
+      'fjord.jpg',
+      '600',
+      '800',
+      'jpg'
+    );
     expect(fs.existsSync(getCreatedFileName())).toEqual(true);
     const r = response as string[];
-    const status = r[0];   
-    expect(status === strings.successCached);    
+    const status = r[0];
+    expect(status === strings.successCached);
   });
 
   it('Expect new file with different format type', async () => {
@@ -99,6 +102,4 @@ describe('Process Image Tests', () => {
     const status = r[0];
     expect(status === strings.errorIncompatibleType);
   });
-
-
 });

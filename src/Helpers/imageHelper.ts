@@ -52,14 +52,17 @@ export async function processImageRequest(
   height = inputHeight;
   let fileStatus: string = strings.errorFileConversion;
 
-  if(!strings.validFormatTypes.includes(inputConversionFormat)){
+  if (!strings.validFormatTypes.includes(inputConversionFormat)) {
     fileStatus = strings.errorIncompatibleType;
   }
   splitFilename(inputName);
   setConversionFormat(inputConversionFormat);
   configureFilePaths();
 
-  if (fileStatus !== strings.errorIncompatibleType && strings.validFormatTypes.includes(extension)) {
+  if (
+    fileStatus !== strings.errorIncompatibleType &&
+    strings.validFormatTypes.includes(extension)
+  ) {
     fileStatus = strings.errorFileConversion; //if there is an error later, this will not get set to success.
 
     console.log('Searching for existing file: ' + newFilePath);
@@ -97,8 +100,10 @@ export function validateData(
 
   if (!strings.filenameRegEx.test(name))
     validationStatus += '-Invalid filename';
-  if (!strings.integerRegEx.test(width)) validationStatus += strings.invalidWidth;
-  if (!strings.integerRegEx.test(height)) validationStatus += strings.invalidHeight;
+  if (!strings.integerRegEx.test(width))
+    validationStatus += strings.invalidWidth;
+  if (!strings.integerRegEx.test(height))
+    validationStatus += strings.invalidHeight;
 
   if (format != undefined && !strings.validFormatTypes.includes(format))
     validationStatus += `-Invalid format: ${format}`;
@@ -137,10 +142,10 @@ function configureFilePaths() {
   newFilePath = path.join(imagePath, strings.scaledFolder, newFileName);
 }
 
-export function getCreatedFileName(){
+export function getCreatedFileName() {
   return newFilePath;
 }
 
-export function clearCache(){
-  fs.rmdirSync(path.resolve("images/scaled"), {recursive: true});
+export function clearCache() {
+  fs.rmdirSync(path.resolve('images/scaled'), { recursive: true });
 }
