@@ -1,16 +1,16 @@
-import express from 'express';
+import express, { Request, Response, Router } from 'express';
 
 import { processImageRequest, validateData } from '../../Helpers/imageHelper';
 import { strings } from '../../Helpers/strings';
 
-const images = express.Router();
+const router: Router = express.Router();
 
-images.get('/', async (req, res) => {
+router.get('/', async (req: Request, res: Response) => {
   console.log(`\n\nRequest Received: ${req.originalUrl}`);
   const name = req.query.name as string;
   const width = req.query.width as string;
   const height = req.query.height as string;
-  let format: string = '';
+  let format = '';
   if (req.query.format !== undefined) {
     format = req.query.format as string;
   } else format = 'jpg';
@@ -22,9 +22,8 @@ images.get('/', async (req, res) => {
     format
   );
 
-  if ((validationResult as String) !== strings.validatedSuccess) {
-    res.statusMessage = validationResult as string;
-    res.sendStatus(400);
+  if ((validationResult as string) !== strings.validatedSuccess) {
+    res.status(400).send(`Error: ${validationResult as string}`);
     console.log(`Error: ${validationResult as string}`);
   } else {
     const response: string[] | undefined = await processImageRequest(
@@ -42,11 +41,10 @@ images.get('/', async (req, res) => {
       res.sendFile(newFilePath);
       console.log('File Sent');
     } else {
-      res.statusMessage = status;
-      res.sendStatus(400);
+      res.status(400).send(status);
       console.log(`Error: ${status}`);
     }
   }
 });
 
-export default images;
+export default router;

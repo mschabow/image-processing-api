@@ -1,10 +1,12 @@
-import fs from 'fs';
 import path from 'path';
 import sharp, { FormatEnum } from 'sharp';
 import { strings } from './strings';
 
+// eslint-disable-next-line @typescript-eslint/no-var-requires
+const fs = require('fs');
+
 let filename: string;
-let extension: string = 'jpg';
+let extension = 'jpg';
 let format: string = extension;
 let width: string;
 let height: string;
@@ -66,16 +68,15 @@ export async function processImageRequest(
     fileStatus = strings.errorFileConversion; //if there is an error later, this will not get set to success.
 
     console.log('Searching for existing file: ' + newFilePath);
-    if (fs.existsSync(newFilePath)) {
+
+    if (await fileExists(newFilePath)) {
       fileStatus = strings.successCached;
       console.log(strings.resizedFileFound);
     } else {
       console.log('Exisitng resized file not found.');
-
       console.log(`Searching for original file: ${baseFilePath}`);
-      if (!fs.existsSync(baseFilePath)) {
-        fileStatus = strings.errorOriginalFileNotFound;
-      } else {
+
+      if (await fileExists(baseFilePath)) {
         await getResizedImage(
           baseFilePath,
           width as string,
@@ -84,10 +85,20 @@ export async function processImageRequest(
           format
         );
         fileStatus = strings.successNew;
+      } else {
+        fileStatus = strings.errorOriginalFileNotFound;
       }
     }
   }
+
   return [fileStatus, newFilePath];
+}
+
+async function fileExists(file: string): Promise<boolean> {
+  return fs.promises
+    .access(file, fs.constants.F_OK)
+    .then(() => true)
+    .catch(() => false);
 }
 
 export function validateData(
@@ -96,17 +107,16 @@ export function validateData(
   height: string,
   format: string
 ): string | undefined {
-  let validationStatus: string = '';
+  let validationStatus = '';
 
-  if (!strings.filenameRegEx.test(name))
-    validationStatus += '-Invalid filename';
+  if (!strings.filenameRegEx.test(name)) validationStatus += 'Invalid filename';
   if (!strings.integerRegEx.test(width))
     validationStatus += strings.invalidWidth;
   if (!strings.integerRegEx.test(height))
     validationStatus += strings.invalidHeight;
 
   if (format != undefined && !strings.validFormatTypes.includes(format))
-    validationStatus += `-Invalid format: ${format}`;
+    validationStatus += `Invalid format: ${format}`;
 
   if (validationStatus == '') {
     validationStatus = strings.validatedSuccess;
@@ -125,6 +135,7 @@ export function createScaledFolder() {
     fs.mkdirSync(scaledPath);
   }
 }
+
 function setConversionFormat(conversionFormat: string) {
   if (conversionFormat !== '' && conversionFormat != '') {
     format = conversionFormat;
@@ -147,5 +158,5 @@ export function getCreatedFileName() {
 }
 
 export function clearCache() {
-  fs.rmdirSync(path.resolve('images/scaled'), { recursive: true });
+  fs.rm(path.resolve('images/scaled'), { recursive: true, force: true });
 }

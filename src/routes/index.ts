@@ -1,12 +1,12 @@
-import express from 'express';
+import express, { Response, Router } from 'express';
 import images from './api/images';
 
-const routes = express.Router();
+const router: Router = express.Router();
 
-routes.get('/', (req, res) => {
+router.get('/', (res: Response) => {
   res.send('main api route');
 });
 
-routes.use('/images', images);
+router.use('/images', images);
 
-export default routes;
+export default router;
